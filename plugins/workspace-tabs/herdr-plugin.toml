@@ -1,0 +1,26 @@
+# workspace.default-tabs
+#
+# Every new workspace starts with three tabs:
+#   pi        — tab renamed from the default first tab
+#   nvim      — new tab
+#   terminal  — new tab
+#
+# Naming only: all three start as plain interactive shells. Set
+# BOOTSTRAP_PI or BOOTSTRAP_NVIM in the plugin config dir to also start
+# the pi agent or launch nvim.
+#
+# Hooks the `workspace.created` lifecycle event, so it fires for workspaces
+# created from the TUI, the CLI, and git worktrees (worktree create/open emit
+# workspace.created for the new workspace). The hook is idempotent: it skips
+# workspaces that already have pi/nvim/terminal tabs.
+
+id = "workspace.default-tabs"
+name = "Default Workspace Tabs"
+version = "0.1.0"
+min_herdr_version = "0.7.0"
+description = "Every new workspace starts with pi, nvim, and terminal tabs"
+platforms = ["macos", "linux"]
+
+[[events]]
+on = "workspace.created"
+command = ["python3", "bootstrap.py"]
