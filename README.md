@@ -1,48 +1,43 @@
 # herdr-config
 
-Versioned Herdr configuration and custom plugin source, kept under herdr's
-own config directory:
+Versioned Herdr configuration and custom plugin source. This repository
+**is** `~/.config/herdr` — the directory herdr uses for its config, plugin
+registry, and live state:
 
 ```
-~/.config/herdr/
-├── config.toml            → symlink → herdr-config/config.toml
-├── herdr-config/          ← this repo
-│   ├── config.toml        user's herdr configuration
-│   └── plugins/
-│       └── workspace-tabs/   workspace.default-tabs — pi / nvim / terminal
-│                             tabs in every new workspace (naming only)
-├── plugins/               herdr-managed: per-plugin config/state +
-│                          GitHub-installed checkouts (never commit this)
-└── session.json, *.log, *.sock, plugins.json  → herdr-managed live state
+~/.config/herdr/                   ← this repo
+├── config.toml                    tracked — your herdr configuration
+├── plugins/
+│   ├── workspace-tabs/            tracked — workspace.default-tabs plugin source
+│   ├── config/                    ignored — per-plugin config/state (herdr-managed)
+│   └── github/                    ignored — GitHub-installed plugin checkouts (herdr-managed)
+├── session.json                   ignored — live session state
+├── plugins.json                   ignored — plugin registry
+├── *.log, *.sock, release-notes.json, .plugins.lock   ignored — live state
+└── .gitignore                     tracked — the transient-file policy
 ```
 
-The repo is a **subdir** of `~/.config/herdr`, never the directory itself:
-herdr continuously rewrites `session.json`, logs, sockets, and `plugins.json`
-in its config dir, and keeps managed plugin checkouts under `plugins/github/`.
-Those must never be tracked or committed.
+`session.json`, logs, sockets, `plugins.json`, `release-notes.json`,
+`.plugins.lock`, and the `plugins/config/` + `plugins/github/` subtrees are
+rewritten continuously by the running herdr server and are **gitignored**.
+Only `config.toml` and your plugin sources are versioned — see `.gitignore`
+for the exact policy.
 
 ## Setup
 
 ```sh
-git clone git@github.com:artieeez/herdr-config.git ~/.config/herdr/herdr-config
-
-# Track config.toml through a symlink (herdr keeps reading its usual path):
-ln -s herdr-config/config.toml ~/.config/herdr/config.toml
-
-herdr plugin link ~/.config/herdr/herdr-config/plugins/workspace-tabs
+git clone git@github.com:artieeez/herdr-config.git ~/.config/herdr
+herdr plugin link ~/.config/herdr/plugins/workspace-tabs
 # or from GitHub:
 herdr plugin install artieeez/herdr-config/plugins/workspace-tabs
 ```
 
 After editing `config.toml`, reload herdr with `prefix+shift+r`
-(reload config).
+(reload config). If herdr ever rewrites `config.toml` (e.g.
+`herdr config reset-keys`), the change shows up as a normal git diff.
 
-## Note on managed state
+## Maintenance
 
-Everything else in `~/.config/herdr` is herdr-owned: `session.json` (live
-session), `herdr-server.log`/`herdr-client.log`, `plugins.json`,
-`release-notes.json`, sockets, and the `plugins/config/` + `plugins/github/`
-subtrees. Do not `git add` them; they churn continuously and contain live
-session/agent data.
-
-See each plugin's `README.md` for configuration options.
+If a future herdr version starts writing new files into `~/.config/herdr`,
+add them to `.gitignore` before running `git add -A`. See each plugin's
+`README.md` for configuration options.

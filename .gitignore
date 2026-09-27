@@ -1,3 +1,22 @@
+# herdr-managed live state — never commit
+session.json
+herdr-server.log
+herdr-client.log
+herdr.sock
+herdr-client.sock
+plugins.json
+release-notes.json
+.plugins.lock
+
+# herdr-managed plugin checkouts and per-plugin config/state
+plugins/config/
+plugins/github/
+
+# config backups created by `herdr config reset-keys`
+config.toml.bak
+config.toml.backup
+
+# editor / OS artifacts
 .DS_Store
 *.swp
 *.swo
